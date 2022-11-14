@@ -60,8 +60,16 @@ app.get("/movies/:movieId/", async (request, response) => {
   SELECT *
   FROM movie
   WHERE movie_id=${movieId};`;
-  const dbObject = await db.get(getMovieQuery);
-  response.send(dbObject);
+  const dbObject = await db.all(getMovieQuery);
+  const finalOutput = dbObject.map((details) => {
+    return {
+      movieId: details.movie_id,
+      directorId: details.director_id,
+      movieName: details.movie_name,
+      leadActor: details.lead_actor,
+    };
+  });
+  response.send(finalOutput);
 });
 
 //update movie details
